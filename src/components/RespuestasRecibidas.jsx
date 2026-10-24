@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import { Container, Table, Form, Button } from 'react-bootstrap';
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:4000');
+ 
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const socket = io(backendUrl);
 
 export default function RespuestasRecibidas() {
   const [respuestas, setRespuestas] = useState([]);
@@ -12,6 +14,30 @@ export default function RespuestasRecibidas() {
     socket.on('alerta_admin', (data) => {
       setRespuestas((prev) => [...prev, data]);
     });
+    return () => socket.off('alerta_admin');
+  }, []);
+
+  useEffect(() => {
+    // 1. Cargar las respuestas que ya estaban pendientes en la base de datos
+    const cargarPendientes = async () => {
+      try {
+        const response = await fetch(`${backendUrl}/api/intentos/pendientes`);
+        if (response.ok) {
+          const data = await response.json();
+          setRespuestas(data);
+        }
+      } catch (error) {
+        console.error("Error al cargar pendientes:", error);
+      }
+    };
+
+    cargarPendientes();
+
+    // 2. Mantener la escucha del socket para las respuestas NUEVAS en tiempo real
+    socket.on('alerta_admin', (data) => {
+      setRespuestas((prev) => [...prev, data]);
+    });
+
     return () => socket.off('alerta_admin');
   }, []);
 
@@ -54,7 +80,7 @@ function FilaTabla({ data, onResponder }) {
     // Transformamos el "Si" o "No" del select a un booleano para el backend
     const acertoBool = esCorrecto === 'Si';
 
-    await fetch(`http://localhost:4000/api/intentos/responder/${data._id}`, {
+    await fetch(`${backendUrl}/api/intentos/responder/${data._id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
