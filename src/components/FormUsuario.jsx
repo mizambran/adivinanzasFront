@@ -151,7 +151,7 @@ export default function FormUsuario() {
               <Form.Control
                 type="text"
                 placeholder=""
-                value={"email@gmail.com"}
+                value={"lourdesgo0015@gmail.com"}
                 className="bg-dark text-white border-secondary"
                 {...register("correo", { required: true })}
               />
