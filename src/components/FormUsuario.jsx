@@ -150,8 +150,7 @@ export default function FormUsuario() {
               <Form.Label>Correo</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Ingresar correo"
-                value={"vivianaflores783@gmail.com"}                
+                placeholder="Ingresar correo"                
                 className="bg-dark text-white border-secondary"
                 {...register("correo", { required: true })}
               />
@@ -165,7 +164,7 @@ export default function FormUsuario() {
                 <Form.Control
                   type={verPassword ? "text" : "password"} // Cambia dinámicamente el tipo
                   placeholder="*************"
-                  className="bg-secondary text-white border-secondary"
+                  className="bg-dark text-white border-secondary"
                   autoComplete="new-password"
                   {...register("adivinar", { required: true })}
                 />
