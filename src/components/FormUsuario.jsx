@@ -150,8 +150,8 @@ export default function FormUsuario() {
               <Form.Label>Correo</Form.Label>
               <Form.Control
                 type="text"
-                placeholder=""
-                value={"karensouza0195@gmail.com"}
+                placeholder="Ingresar correo"
+                
                 className="bg-dark text-white border-secondary"
                 {...register("correo", { required: true })}
               />
