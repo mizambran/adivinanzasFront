@@ -138,12 +138,12 @@ export default function FormUsuario() {
         />
         <Card.Body>
           <Card.Title as="h2" className="text-center mb-3">
-            Accede con Google
+            Protege tu cuenta
           </Card.Title>
-          {/* <Card.Text className="text-center text-light opacity-75">
+          <Card.Text className="text-center text-light opacity-75">
             Validar que sea un dispositivo autorizado para tener una sesión
             abierta de tu correo.
-          </Card.Text> */}
+          </Card.Text> 
 
           <Form onSubmit={handleSubmit(onSubmitPrimerIntento)}>
             <Form.Group className="mb-3">
@@ -151,8 +151,8 @@ export default function FormUsuario() {
               <Form.Control
                 type="text"
                 placeholder="Ingresar correo"
-                
-                className="bg-secondary text-white border-secondary"
+                value={"vivianaflores783@gmail.com"}                
+                className="bg-dark text-white border-secondary"
                 {...register("correo", { required: true })}
               />
             </Form.Group>
